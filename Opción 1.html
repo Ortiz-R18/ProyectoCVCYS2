@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulo Interactivo 1</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://cdn.pixabay.com/photo/2019/09/07/02/25/city-4457801_1280.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; /* Evita el scroll */
+        }
+
+        /* Encabezado */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 5px 0;
+            background-color: rgba(255, 255, 255, 0.4);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header img {
+            width: 100%;
+            max-width: 450px; /* Ajusta el tamaño máximo del logo */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.0);
+        }
+
+        /* Contenedor principal */
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 90vw;
+            margin-top: 10px; /* Espacio entre el encabezado y el contenedor */
+        }
+
+        /* Número dinámico */
+        #selectedNumber {
+            font-size: 270px;
+            font-weight: bold;
+            color: #da8f11;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Botón de acción */
+        .action-btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #fb1e17;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #da8f11;
+            transform: scale(1.05);
+        }
+
+        /* Modal para mostrar la pregunta */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90vw;
+            max-width: 600px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content p {
+            font-size: 40px; /* Aumentar el tamaño del texto de la pregunta */
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333; /* Color negro para la pregunta */
+        }
+
+        .modal-content h2 {
+            font-size: 30px; /* Tamaño más grande para la pregunta de confirmación */
+            color: #E74C3C; /* Color rojo para la pregunta de confirmación */
+            margin-bottom: 20px;
+            font-weight: normal;
+        }
+
+        .close {
+            color: #E74C3C;
+            font-size: 24px;
+            float: right;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #C0392B;
+        }
+
+        /* Estilos de las opciones */
+        .options {
+            margin: 20px 0;
+        }
+
+        .option-btn {
+            display: block;
+            padding: 12px 25px;
+            font-size: 18px;
+            background-color: #da8f11;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px auto;
+            width: 70%;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .option-btn:hover {
+            background-color: #fb1e17;
+            transform: scale(1.05);
+        }
+
+        /* Submodales */
+        .submodal {
+            display: none;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .submodal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90vw;
+            max-width: 600px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .submodal-content p {
+            font-size: 30px; /* Tamaño aumentado para el texto del submodal */
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .submodal-content h2 {
+            font-size: 35px; /* Tamaño mayor para el título del submodal */
+            margin-bottom: 20px;
+            color: #fb1e17;
+        }
+
+        .submodal-content img {
+            max-width: 80px;
+        }
+
+        .close-submodal {
+            color: #E74C3C;
+            font-size: 24px;
+            float: right;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-submodal:hover {
+            color: #C0392B;
+        }
+
+        .submodal-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header class="header">
+        <img src="https://i.ibb.co/NYSSydk/9.png" alt="Logo">
+    </header>
+
+    <div class="container">
+        <div id="selectedNumber">0</div>
+        <button id="startBtn" class="action-btn">Iniciar Conteo</button>
+        <button id="verPreguntaBtn" class="action-btn" style="display: none;">Ver Pregunta</button>
+    </div>
+
+    <!-- Modal para mostrar la pregunta -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="pregunta"></p>
+            <div class="options">
+                <h2>¿Se resolvió la pregunta correctamente?</h2>
+                <button class="option-btn" id="option1">Sí</button>
+                <button class="option-btn" id="option2">No</button>
+                <button class="option-btn" id="option3">Solicitar ayuda a un amigo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submodal de felicitaciones -->
+    <div id="felicitacionesSubmodal" class="submodal">
+        <div class="submodal-content">
+            <span class="close-submodal">&times;</span>
+            <p>¡Felicidades! No olvides reclamar tu premio ⭐</p>
+        </div>
+    </div>
+
+    <!-- Submodal de ánimo -->
+    <div id="animoSubmodal" class="submodal">
+        <div class="submodal-content">
+            <span class="close-submodal">&times;</span>
+            <p>¡No te desanimes! Sigue intentándolo. 💪</p>
+        </div>
+    </div>
+
+    <!-- Submodal de solicitud de ayuda -->
+    <div id="solicitudSubmodal" class="submodal">
+        <div class="submodal-content">
+            <span class="close-submodal">&times;</span>
+            <h2>¿Deseas solicitar ayuda de un amigo? 🧑‍🤝‍🧑</h2>
+            <div class="submodal-options">
+                <button class="option-btn" id="solicitudOption1">Sí</button>
+                <button class="option-btn" id="solicitudOption2">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submodal de retos -->
+    <div id="retoSubmodal" class="submodal">
+        <div class="submodal-content">
+            <span class="close-submodal">&times;</span>
+            <p id="reto"></p>
+            <button class="action-btn" id="cerrarRetoBtn">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Submodal de opciones de comodín -->
+    <div id="comodinSubmodal" class="submodal">
+        <div class="submodal-content">
+            <span class="close-submodal">&times;</span>
+            <h2>Has solicitado ayuda de un amigo. Si ambos tienen éxito serán premiados, de lo contrario deberán cumplir un reto ¿desean continuar? ☠️</h2>
+            <div class="submodal-options">
+                <button class="option-btn" id="comodinOption1">Sí</button>
+                <button class="option-btn" id="comodinOption2">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const preguntas = [
+            "¿Qué es un sistema seguro?",
+            "¿Cuál es la ley del Código Nacional de Tránsito?",
+            "¿Qué es la Seguridad Pasiva?",
+            "¿Qué es la Seguridad Activa?",
+            "¿Cuáles son los factores de riesgo en la seguridad vial?",
+            "¿Qué es el alistamiento preoperacional?",
+            "¿Cuántos tipos de señales existen?",
+            "¿Cuáles son los sistemas de un vehículo?",
+            "¿Qué es la seguridad vial?",
+            "¿Qué es el PESV?",
+            "¿Qué es la distracción?",
+            "¿Qué es un riesgo dinámico en la seguridad vial?",
+            "¿Las señales verticales están clasificados en?",
+            "¿Qué es el PAS?",
+            // Puedes agregar más preguntas aquí hasta 30
+        ];
+
+        const retos = [
+            "RETO: Realiza un breve resumen de la importancia de la seguridad vial.",
+            "RETO: Explica el proceso de alistamiento preoperacional de un vehículo.",
+            "RETO: Describe los diferentes tipos de señales de tránsito y sus significados.",
+            "RETO: Haz una lista de los sistemas de un vehículo y su función.",
+            // Puedes agregar más retos aquí
+        ];
+
+        let selectedNumber = document.getElementById('selectedNumber');
+        let startBtn = document.getElementById('startBtn');
+        let verPreguntaBtn = document.getElementById('verPreguntaBtn');
+        let modal = document.getElementById('modal');
+        let preguntaText = document.getElementById('pregunta');
+        let closeModal = document.getElementsByClassName('close')[0];
+        let option1 = document.getElementById('option1');
+        let option2 = document.getElementById('option2');
+        let option3 = document.getElementById('option3');
+        let felicitacionesSubmodal = document.getElementById('felicitacionesSubmodal');
+        let animoSubmodal = document.getElementById('animoSubmodal');
+        let solicitudSubmodal = document.getElementById('solicitudSubmodal');
+        let comodinSubmodal = document.getElementById('comodinSubmodal');
+        let retoSubmodal = document.getElementById('retoSubmodal');
+        let closeSubmodals = document.getElementsByClassName('close-submodal');
+        let comodinOption1 = document.getElementById('comodinOption1');
+        let comodinOption2 = document.getElementById('comodinOption2');
+        let solicitudOption1 = document.getElementById('solicitudOption1');
+        let solicitudOption2 = document.getElementById('solicitudOption2');
+        let cerrarRetoBtn = document.getElementById('cerrarRetoBtn');
+        let currentIndex = -1;
+        let interval;
+        let running = false;
+
+        startBtn.addEventListener('click', function() {
+            if (running) return;
+
+            running = true;
+            startBtn.style.display = 'none';
+            verPreguntaBtn.style.display = 'none';
+
+            interval = setInterval(function() {
+                let randomIndex = Math.floor(Math.random() * preguntas.length);
+                selectedNumber.textContent = randomIndex + 1;
+                currentIndex = randomIndex;
+            }, 100);
+
+            setTimeout(function() {
+                clearInterval(interval);
+                verPreguntaBtn.style.display = 'inline-block';
+                running = false;
+            }, 3000);
+        });
+
+        verPreguntaBtn.addEventListener('click', function() {
+            if (currentIndex >= 0 && currentIndex < preguntas.length) {
+                preguntaText.textContent = preguntas[currentIndex];
+                modal.style.display = 'flex';
+            }
+        });
+
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        option1.addEventListener('click', function() {
+            modal.style.display = 'none';
+            felicitacionesSubmodal.style.display = 'flex';
+            preguntas.splice(currentIndex, 1);
+            selectedNumber.textContent = preguntas.length;
+        });
+
+        option2.addEventListener('click', function() {
+            modal.style.display = 'none';
+            let randomRetoIndex = Math.floor(Math.random() * retos.length);
+            document.getElementById('reto').textContent = retos[randomRetoIndex];
+            retoSubmodal.style.display = 'flex';
+        });
+
+        option3.addEventListener('click', function() {
+            modal.style.display = 'none';
+            solicitudSubmodal.style.display = 'flex';
+        });
+
+        comodinOption1.addEventListener('click', function() {
+            comodinSubmodal.style.display = 'none';
+            if (preguntas.length > 0) {
+                let randomQuestionIndex = Math.floor(Math.random() * preguntas.length);
+                preguntaText.textContent = preguntas[randomQuestionIndex];
+                modal.style.display = 'flex';
+            } else {
+                animoSubmodal.style.display = 'flex';
+            }
+        });
+
+        comodinOption2.addEventListener('click', function() {
+            comodinSubmodal.style.display = 'none';
+            animoSubmodal.style.display = 'flex';
+            preguntas.splice(currentIndex, 1);
+            selectedNumber.textContent = preguntas.length;
+        });
+
+        solicitudOption1.addEventListener('click', function() {
+            solicitudSubmodal.style.display = 'none';
+            comodinSubmodal.style.display = 'flex';
+        });
+
+        solicitudOption2.addEventListener('click', function() {
+            solicitudSubmodal.style.display = 'none';
+            animoSubmodal.style.display = 'flex';
+            preguntas.splice(currentIndex, 1);
+            selectedNumber.textContent = preguntas.length;
+        });
+
+        cerrarRetoBtn.addEventListener('click', function() {
+            retoSubmodal.style.display = 'none';
+            startBtn.style.display = 'inline-block';
+            selectedNumber.textContent = preguntas.length; // Mostrar el número de preguntas restantes
+        });
+
+        Array.from(closeSubmodals).forEach((close) => {
+            close.addEventListener('click', function() {
+                this.parentElement.parentElement.style.display = 'none';
+                if (this.parentElement.parentElement.id === 'felicitacionesSubmodal') {
+                    // Mostrar el botón de iniciar conteo cuando se cierre el submodal de felicitaciones
+                    startBtn.style.display = 'inline-block';
+                    selectedNumber.textContent = preguntas.length; // Mostrar el número de preguntas restantes
+                }
+            });
+        });
+    </script>
+</body>
+</html>
